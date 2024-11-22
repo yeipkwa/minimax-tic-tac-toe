@@ -183,8 +183,7 @@ class Game:
     #         return 0
 
     def utility(self, bd=None):
-        """ Utility is a function that recursively interrogates all possible outcomes that could
-            result from making a move, and returns the minimum possible score
+        """ Utility is a function that returns the value of the board if the board is in a terminal state
         """
         winner = None
         state = None
@@ -195,17 +194,36 @@ class Game:
             actions = self.actions(bd)
             max_val = float("-inf")
             max_action_depth = None
-            for action in actions.items():
+            min_val = float("inf")
+            min_action_depth = None
+            if self.player(bd) == "X":
+                for action in actions.items():
                 # if not action[1]:
                 #     continue
-                score = self.utility(action[1])
+                    score = self.utility(action[1])
                 # print(score[1], score[0])
-                if score[0] == max_val:
-                    if max_action_depth > score[1]:
+                    if score[0] == max_val:
+                        if max_action_depth > score[1]:
+                            max_action_depth = score[1]
+                    if score[0] > max_val:
+                        max_val = score[0]
                         max_action_depth = score[1]
-                if score[0] > max_val:
-                    max_val = score[0]
-                    max_action_depth = score[1]
+                return (max_val, max_action_depth)
+            else:
+                for action in actions.items():
+                    # if not action[1]:
+                    #     continue
+                    score = self.utility(action[1])
+                    # print(score[1], score[0])
+                    if score[0] == min_val:
+                        if min_action_depth > score[1]:
+                            min_action_depth = score[1]
+                    if score[0] < min_val:
+                        min_val = score[0]
+                        min_action_depth = score[1]
+                return (min_val, min_action_depth)
+
+
             return (max_val, max_action_depth)
 
         state = bd.state

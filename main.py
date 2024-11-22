@@ -1,5 +1,4 @@
 import random
-import sys
 
 from game import Game, Board
 
@@ -20,6 +19,7 @@ while not game.terminal():
                 print(move[1])
 
         player_move = int(input("Please make a move by typing its corresponding number "))
+
 
         if not valid_moves[player_move]:
             print("Please make a valid move")
