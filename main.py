@@ -1,5 +1,3 @@
-import random
-
 from game import Game, Board
 
 grid = [[None for i in range(0, 3)] for j in range(0, 3)]
@@ -20,7 +18,6 @@ while not game.terminal():
 
         player_move = int(input("Please make a move by typing its corresponding number "))
 
-
         if not valid_moves[player_move]:
             print("Please make a valid move")
             continue
@@ -28,61 +25,24 @@ while not game.terminal():
         game.result(action=valid_moves[player_move])
     else:
         print("Computers turn")
-
-        valid_moves = game.actions()
-        moves = []
-        scores = []
-        depths = []
+        valid_moves = set(game.actions().values())
+        best_value = float("inf")
         best_move = None
-        best_depth = float("inf")
-        best_score = float("inf")
-        for move in valid_moves.items():
-            moves.append(move[1])
-            scores.append(game.utility(move[1])[0])
-            depths.append(game.utility(move[1])[1])
 
-        print(scores)
-        print(depths)
-        for i in range(len(moves)):
-            if scores[i] <= best_score:
-                best_score = scores[i]
-                best_move = moves[i]
-                best_depth = depths[i]
-
-        for i in range(len(moves)):
-            if scores[i] > best_score:
-                moves[i] = None
-                scores[i] = None
-                depths[i] = None
-
-        for i in range(len(moves)):
-            if not depths[i]:
-                continue
-            if depths[i] > best_depth:
-                best_depth = depths[i]
-
-        for i in range(len(moves)):
-            if not depths[i]:
-                continue
-            if depths[i] < best_depth:
-                moves[i] = None
-                scores[i] = None
-                depths[i] = None
-
-        moves = [i for i in moves if i]
-        scores = [i for i in scores if i]
-        depths = [i for i in depths if i]
-
-        best_move = random.choice(moves)
-
+        for move in valid_moves:
+            current_value = game.max_value(move)
+            if current_value < best_value:
+                best_value = current_value
+                best_move = move
         computers_move = best_move
 
         print(computers_move)
 
         game.result(computers_move)
 
+    winner_val = float("inf")
     if game.terminal():
-        winner_val = game.utility()[0]
+        winner_val = game.utility()
 
         if winner_val == 1:
             print("X Wins")
@@ -91,16 +51,6 @@ while not game.terminal():
         else:
             print("Nobody Wins")
 
-# grid = [
-#     [None, None, None],
-#     [None, "O", None],
-#     ["O", None, None]
-# ]
-#
-# board = Board(grid, parent=None)
-#
-# game = Game(board)
-#
-# print(game.terminal())
-#
-# print(game.utility())
+
+
+

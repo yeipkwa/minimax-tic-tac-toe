@@ -102,130 +102,12 @@ class Game:
 
         return rt
 
-    # def utility(self, bd=None):
-    #     """ Utility is a function that recursively interrogates all possible outcomes that could
-    #         result from making a move, and returns the minimum possible score
-    #     """
-    #     winner = None
-    #     state = None
-    #     if not bd:
-    #         bd = self.board
-    #
-    #     if not self.terminal(bd):
-    #         actions = self.actions(bd)
-    #         min_val = float("inf")
-    #         for action in actions.items():
-    #             if not action[1]:
-    #                 continue
-    #             score = self.utility(action[1])
-    #             if score == -1:
-    #                 return -1
-    #             if score < min_val:
-    #                 min_val = score
-    #         return min_val
-    #
-    #     state = bd.state
-    #
-    #     ## Check for completed row
-    #     if not winner:
-    #         for row in state:
-    #             row_completed = True
-    #             value = row[0]
-    #             for col in range(1, len(row)):
-    #                 if row[col] != value:
-    #                     row_completed = False
-    #                     break
-    #             if value and row_completed:
-    #                 winner = value
-    #
-    #     if not winner:
-    #         ## Check for completed column
-    #         for col in range(len(state[0])):
-    #             col_completed = True
-    #             value = state[0][col]
-    #             for row in range(1, len(state)):
-    #                 if state[row][col] != value:
-    #                     col_completed = False
-    #                     break
-    #             if value and col_completed:
-    #                 winner = value
-    #
-    #     if not winner:
-    #         ## Check for completed left diagonal
-    #         diag_completed = True
-    #         value = state[0][0]
-    #         for i in range(1, len(state)):
-    #             if state[i][i] != value:
-    #                 diag_completed = False
-    #                 break
-    #         if diag_completed and value:
-    #             winner = value
-    #
-    #     if not winner:
-    #         ## Check for completed right diagonal
-    #         diag_completed = True
-    #         value = state[len(state) - 1][0]
-    #         for i in range(len(state) - 2, -1, -1):
-    #             if state[i][len(state) - i - 1] != value:
-    #                 diag_completed = False
-    #                 break
-    #             if diag_completed and value:
-    #                 winner = value
-    #
-    #     #print(bd)
-    #
-    #     if winner == "X":
-    #         return 1
-    #     elif winner == "O":
-    #         #print(bd)
-    #         return -1
-    #     else:
-    #         return 0
-
     def utility(self, bd=None):
         """ Utility is a function that returns the value of the board if the board is in a terminal state
         """
         winner = None
-        state = None
         if not bd:
             bd = self.board
-
-        if not self.terminal(bd):
-            actions = self.actions(bd)
-            max_val = float("-inf")
-            max_action_depth = None
-            min_val = float("inf")
-            min_action_depth = None
-            if self.player(bd) == "X":
-                for action in actions.items():
-                # if not action[1]:
-                #     continue
-                    score = self.utility(action[1])
-                # print(score[1], score[0])
-                    if score[0] == max_val:
-                        if max_action_depth > score[1]:
-                            max_action_depth = score[1]
-                    if score[0] > max_val:
-                        max_val = score[0]
-                        max_action_depth = score[1]
-                return (max_val, max_action_depth)
-            else:
-                for action in actions.items():
-                    # if not action[1]:
-                    #     continue
-                    score = self.utility(action[1])
-                    # print(score[1], score[0])
-                    if score[0] == min_val:
-                        if min_action_depth > score[1]:
-                            min_action_depth = score[1]
-                    if score[0] < min_val:
-                        min_val = score[0]
-                        min_action_depth = score[1]
-                return (min_val, min_action_depth)
-
-
-            return (max_val, max_action_depth)
-
         state = bd.state
 
         ## Check for completed row
@@ -277,12 +159,30 @@ class Game:
         # print(bd)
 
         if winner == "X":
-            return (1, bd.depth)
+            return 1
         elif winner == "O":
             # print(bd)
-            return (-1, bd.depth)
+            return -1
         else:
-            return (0, bd.depth)
+            return 0
+
+    def min_value(self, bd):
+        if self.terminal(bd):
+            return self.utility(bd)
+        v = float("-inf")
+        actions = self.actions(bd)
+        for action in actions.items():
+            v = min(v, self.max_value(action[1]))
+        return v
+
+    def max_value(self, bd):
+        if self.terminal(bd):
+            return self.utility(bd)
+        v = float("-inf")
+        actions = self.actions(bd)
+        for action in actions.items():
+            v = max(v, self.min_value(action[1]))
+        return v
 
 
 class Board:
@@ -303,24 +203,3 @@ class Board:
 
         return s
 
-# # grid = [[None for i in range(0, 3)] for j in range(0, 3)]
-#
-# grid = [
-#     [None, None, None],
-#     ["X", "X", "X"],
-#     ["0", None, None],
-# ]
-#
-# board = Board(grid, None)
-#
-# game = Game(board)
-#
-# act = game.actions()
-#
-# for i in act.items():
-#     print(i[0])
-#     print(i[1])
-#
-# print(game.terminal())
-#
-# print(game.utility())
