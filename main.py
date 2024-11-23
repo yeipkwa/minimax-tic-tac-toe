@@ -31,11 +31,13 @@ while not game.terminal():
 
         for move in valid_moves:
             current_value = game.max_value(move)
+            print(current_value)
             if current_value < best_value:
                 best_value = current_value
                 best_move = move
+        print()
         computers_move = best_move
-
+        print(best_value)
         print(computers_move)
 
         game.result(computers_move)

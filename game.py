@@ -156,8 +156,6 @@ class Game:
             if diag_completed and value:
                 winner = value
 
-        # print(bd)
-
         if winner == "X":
             return 1
         elif winner == "O":
@@ -169,7 +167,7 @@ class Game:
     def min_value(self, bd):
         if self.terminal(bd):
             return self.utility(bd)
-        v = float("-inf")
+        v = float("inf")
         actions = self.actions(bd)
         for action in actions.items():
             v = min(v, self.max_value(action[1]))
